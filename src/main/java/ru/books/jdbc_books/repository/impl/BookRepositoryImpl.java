@@ -1,8 +1,9 @@
-package ru.books.jdbc_books;
+package ru.books.jdbc_books.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.books.jdbc_books.Book;
+import ru.books.jdbc_books.model.Book;
+import ru.books.jdbc_books.repository.BookRepository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -59,5 +60,23 @@ public class BookRepositoryImpl implements BookRepository {
         Long id = resultSet.getLong("id");
         String name = resultSet.getString("name");
         return new Book(id, name);
+    }
+
+    @Override
+    public Book findBookById(Long id) {
+        Book result = new Book();
+        String SQL_findBookById = "SELECT * from books WHERE id=" + id;
+
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SQL_findBookById)) {
+            while (resultSet.next()) {
+                result = converRowToBook(resultSet);
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+        return result;
     }
 }

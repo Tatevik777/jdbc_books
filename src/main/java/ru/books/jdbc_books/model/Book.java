@@ -1,4 +1,4 @@
-package ru.books.jdbc_books;
+package ru.books.jdbc_books.model;
 
 public class Book {
     private Long id;
